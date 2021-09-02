@@ -1,0 +1,2 @@
+# Spotify-Playlist-Organizer
+A playlist organizer for Spotify that sorts by artist with the most songs in that playlist. For example, an artist with 10 songs in the playlist will be at the top, followed by an artist with 7, then 4, then 3, etc. Artists with the same amount of songs in the playlist are sorted by total listening time of said songs. Songs by an artist are sorted by album, and number of songs from said album.
