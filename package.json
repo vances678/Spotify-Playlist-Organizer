@@ -1,0 +1,17 @@
+{
+    "name": "spotify-playlist-organizer",
+    "version": "1.0.0",
+    "description": "A playlist organizer for Spotify",
+    "main": "main.js",
+    "dependencies": {
+        "express": "*",
+        "open": "*",
+        "request": "*",
+        "underscore": "*",
+        "readline-sync": "*"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vances678/Spotify-Playlist-Organizer"
+    }
+}
