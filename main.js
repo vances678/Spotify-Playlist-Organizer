@@ -131,10 +131,10 @@ function distillTracks(tracks) {
 
 function sortTracks(tracks) {
 
-    const sort1 = _.sortBy(tracks, "albumID")                     // sort by album
+    const sort1 = _.sortBy(tracks, "albumID").reverse()           // sort by album (reverse order)
     const sort2 = _.sortBy(sort1, "albumCount")                   // sort by album count
     const sort3 = _.sortBy(sort2, "artistID")                     // sort by artist
-    const sortedTracks = _.sortBy(sort3, "artistCount").reverse() // sort by artist count (reversed)
+    const sortedTracks = _.sortBy(sort3, "artistCount").reverse() // sort by artist count (reverse order)
 
     const sortedTrackURIs = []
     for (track of sortedTracks) {
@@ -207,14 +207,15 @@ function createPlaylist(details, userID, token) {
 
 async function uploadCoverImage(playlistID, coverImage, token) {
     const compressedImage = await resizeBase64Img(coverImage, 640, 640)
+    const bodyImage = compressedImage.length/1000 > 256 ? await resizeBase64Img(coverImage, 300, 300) : compressedImage
     const uploadOptions = {
         url: `https://api.spotify.com/v1/playlists/${playlistID}/images`,
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "image/jpeg",
-            "content-length": compressedImage.length
+            "content-length": bodyImage.length
         },
-        body: compressedImage
+        body: bodyImage
     }
     return new Promise((resolve) => {
         request.put(uploadOptions, function(error, response, body) {
@@ -289,7 +290,7 @@ async function onStart() {
                 const trackGroup = sortedTracks.slice(0 + i, 100 + i) // Can only upload 100 tracks at a time
                 didUploadTrackGroup = await uploadTracks(trackGroup, newPlaylistID, token)
             }
-        } else { didUploadTracks = await uploadTracks(tracks, newPlaylistID, token) }
+        } else { didUploadTracks = await uploadTracks(sortedTracks, newPlaylistID, token) }
 
         console.log("Complete!")
         process.exit(0)
