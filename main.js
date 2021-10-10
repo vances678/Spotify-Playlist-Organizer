@@ -4,6 +4,7 @@ const reader = require('readline-sync') // Used to get user input for url
 const open = require("open")            // Used to open auth in browser
 const request = require("request")      // Used to get/post/put to Spotify API
 const express = require("express")      // Used to listen for auth callback
+const sharp = require("sharp")          // Used to resize base64 image for request
 
 const clientID = "0f09a21337fa472c9beb3c309079239e"
 const clientSecret = "" // Get from `https://developer.spotify.com/dashboard/applications/${clientId}`
@@ -204,14 +205,16 @@ function createPlaylist(details, userID, token) {
     })
 }
 
-function uploadCoverImage(playlistID, coverImage, token) {
+async function uploadCoverImage(playlistID, coverImage, token) {
+    const compressedImage = await resizeBase64Img(coverImage, 640, 640)
     const uploadOptions = {
         url: `https://api.spotify.com/v1/playlists/${playlistID}/images`,
         headers: {
             "Authorization": `Bearer ${token}`,
-            "Content-Type": "image/jpeg"
+            "Content-Type": "image/jpeg",
+            "content-length": compressedImage.length
         },
-        body: coverImage
+        body: compressedImage
     }
     return new Promise((resolve) => {
         request.put(uploadOptions, function(error, response, body) {
@@ -220,6 +223,16 @@ function uploadCoverImage(playlistID, coverImage, token) {
         })
     })
 }
+
+async function resizeBase64Img(imageData, height, width) {
+    try {
+        let resizedImage = Buffer.from(imageData, "base64")
+        resizedImage = await sharp(resizedImage).resize(height, width).toBuffer()
+        return resizedImage.toString("base64")
+    } catch (error) {
+        onError(error)
+    }
+  }
 
 function uploadTracks(tracks, playlistID, token) {
     const uploadOptions = {
