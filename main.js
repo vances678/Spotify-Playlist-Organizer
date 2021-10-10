@@ -130,17 +130,20 @@ function distillTracks(tracks) {
 }
 
 function sortTracks(tracks) {
-
+    tracks.forEach((track) => {
+        if (track.albumCount == 1 && track.artistCount != 1) {
+            track.albumID = null
+        } else if (track.artistCount == 1) { 
+            track.albumID = null
+            track.artistID = null 
+        }
+    })
     const sort1 = _.sortBy(tracks, "albumID").reverse()           // sort by album (reverse order)
     const sort2 = _.sortBy(sort1, "albumCount")                   // sort by album count
     const sort3 = _.sortBy(sort2, "artistID")                     // sort by artist
     const sortedTracks = _.sortBy(sort3, "artistCount").reverse() // sort by artist count (reverse order)
-
     const sortedTrackURIs = []
-    for (track of sortedTracks) {
-        sortedTrackURIs.push(track.uri)
-    }
-
+    for (track of sortedTracks) { sortedTrackURIs.push(track.uri) }
     return sortedTrackURIs
 }
 
