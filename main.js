@@ -6,7 +6,7 @@ const request = require("request")      // Used to get/post/put to Spotify API
 const express = require("express")      // Used to listen for auth callback
 const sharp = require("sharp")          // Used to resize base64 image for request
 
-const clientID = "0f09a21337fa472c9beb3c309079239e"
+const clientID = "REDACTED"
 const clientSecret = "" // Get from `https://developer.spotify.com/dashboard/applications/${clientId}`
 const redirectURI = "http://localhost:8888/callback"
 const scopes = encodeURIComponent("playlist-modify-private ugc-image-upload")
